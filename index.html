@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball RNG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>🏀 Basketball RNG</h1>
+        <p>Roll. Collect. Dominate.</p>
+    </header>
+
+    <main>
+        <section class="stats">
+            <div class="stat">
+                <span>💰 Coins</span>
+                <h2 id="coins">100</h2>
+            </div>
+            <div class="stat">
+                <span>🏆 Best OVR</span>
+                <h2 id="best">0</h2>
+            </div>
+            <div class="stat">
+                <span>📦 Players</span>
+                <h2 id="total">0</h2>
+            </div>
+        </section>
+
+        <section class="roll-section">
+            <div id="player-card" class="player-card">
+                <div class="basketball">🏀</div>
+                <h2>READY TO ROLL?</h2>
+                <p>Click the button to find a player!</p>
+            </div>
+
+            <button id="roll-button">🎲 ROLL (10 COINS)</button>
+            <p id="message"></p>
+        </section>
+
+        <section class="inventory-section">
+            <h2>My Collection</h2>
+            <div id="inventory" class="inventory">
+                <p class="empty">Your collection is empty.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
