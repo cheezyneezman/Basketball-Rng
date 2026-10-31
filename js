@@ -16,9 +16,18 @@ const coinDisplay = document.getElementById("coins");
 const bestDisplay = document.getElementById("best");
 const totalDisplay = document.getElementById("total");
 const inventoryDisplay = document.getElementById("inventory");
-const card = document.getElementById("player-card");
+const result = document.getElementById("result");
 const message = document.getElementById("message");
 const rollButton = document.getElementById("roll-button");
+
+const sellValues = {
+    Common: 5,
+    Rare: 15,
+    Epic: 35,
+    Legendary: 75,
+    Mythic: 150,
+    GOAT: 500
+};
 
 function saveGame() {
     localStorage.setItem("coins", coins);
@@ -29,7 +38,7 @@ function updateStats() {
     coinDisplay.textContent = coins;
     totalDisplay.textContent = inventory.length;
 
-    let best = inventory.length
+    const best = inventory.length
         ? Math.max(...inventory.map(p => p.ovr))
         : 0;
 
@@ -39,67 +48,82 @@ function updateStats() {
     renderInventory();
 }
 
+function getRandomPlayer() {
+    let random = Math.random() * 100;
+    let total = 0;
+
+    for (const player of players) {
+        total += player.chance;
+
+        if (random < total) {
+            return player;
+        }
+    }
+
+    return players[0];
+}
+
 function rollPlayer() {
     if (coins < 10) {
         message.textContent = "Not enough coins!";
         return;
     }
 
+    rollButton.disabled = true;
     coins -= 10;
 
-    let random = Math.random() * 100;
-    let total = 0;
-    let selected = players[0];
+    message.textContent = "Rolling...";
 
-    for (let player of players) {
-        total += player.chance;
-
-        if (random < total) {
-            selected = player;
-            break;
-        }
-    }
-
-    inventory.push({
-        ...selected,
-        id: Date.now() + Math.random()
-    });
-
-    card.innerHTML = `
-        <div class="basketball">🏀</div>
-        <h2>${selected.name}</h2>
-        <h1>${selected.ovr} OVR</h1>
-        <p>${selected.rarity}</p>
+    result.innerHTML = `
+        <div class="player-card">
+            <div class="basketball">🏀</div>
+            <h2>???</h2>
+            <div class="ovr">?</div>
+            <p class="rarity">UNKNOWN</p>
+        </div>
     `;
 
-    card.className = "player-card " + selected.rarity.toLowerCase();
-
-    message.textContent = `You pulled ${selected.name}!`;
-
     updateStats();
+
+    setTimeout(() => {
+        const selected = getRandomPlayer();
+
+        const newPlayer = {
+            ...selected,
+            id: Date.now() + Math.random()
+        };
+
+        inventory.push(newPlayer);
+
+        result.innerHTML = `
+            <div class="player-card ${selected.rarity.toLowerCase()}">
+                <div class="basketball">🏀</div>
+                <h2>${selected.name}</h2>
+                <div class="ovr">${selected.ovr}</div>
+                <p class="rarity">${selected.rarity.toUpperCase()}</p>
+            </div>
+        `;
+
+        message.textContent = `You pulled ${selected.name}!`;
+
+        rollButton.disabled = false;
+        updateStats();
+
+    }, 700);
 }
 
 function sellPlayer(id) {
-    let index = inventory.findIndex(p => p.id === id);
+    const index = inventory.findIndex(p => p.id === id);
 
     if (index === -1) return;
 
-    let player = inventory[index];
+    const player = inventory[index];
 
-    let values = {
-        Common: 5,
-        Rare: 15,
-        Epic: 35,
-        Legendary: 75,
-        Mythic: 150,
-        GOAT: 500
-    };
-
-    coins += values[player.rarity];
+    coins += sellValues[player.rarity];
 
     inventory.splice(index, 1);
 
-    message.textContent = `Sold ${player.name}!`;
+    message.textContent = `Sold ${player.name} for ${sellValues[player.rarity]} coins!`;
 
     updateStats();
 }
@@ -113,18 +137,23 @@ function renderInventory() {
 
     inventoryDisplay.innerHTML = inventory.map(player => `
         <div class="player-item ${player.rarity.toLowerCase()}">
-            <div>🏀</div>
+            <div class="basketball">🏀</div>
             <h3>${player.name}</h3>
             <p>${player.ovr} OVR</p>
             <p>${player.rarity}</p>
-            <button onclick="sellPlayer(${player.id})">
-                Sell
-            </button>
+            <button data-id="${player.id}">Sell (${sellValues[player.rarity]})</button>
         </div>
     `).join("");
 }
 
 rollButton.addEventListener("click", rollPlayer);
 
-updateStats();
+inventoryDisplay.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-id]");
 
+    if (!button) return;
+
+    sellPlayer(Number(button.dataset.id));
+});
+
+updateStats();
