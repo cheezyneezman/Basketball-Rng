@@ -28,14 +28,13 @@ header p {
 }
 
 main {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: auto;
 }
 
 .stats {
     display: flex;
     gap: 15px;
-    justify-content: center;
     margin: 20px 0;
 }
 
@@ -59,29 +58,46 @@ main {
 .roll-section {
     text-align: center;
     margin: 35px 0;
+    min-height: 250px;
+}
+
+#result {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
 }
 
 .player-card {
-    background: #202637;
-    border: 2px solid #444;
+    width: 230px;
+    min-height: 290px;
+    border: 3px solid #555;
     border-radius: 18px;
-    padding: 35px;
-    max-width: 350px;
-    margin: auto;
-    transition: 0.2s;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(145deg, #30394f, #171c29);
+    animation: reveal 0.5s ease;
+    box-shadow: 0 8px 25px #0008;
 }
 
-.basketball {
-    font-size: 65px;
-    margin-bottom: 15px;
+.player-card .basketball {
+    font-size: 55px;
 }
 
 .player-card h2 {
-    margin: 10px 0;
+    font-size: 22px;
 }
 
-.player-card p {
-    color: #aaa;
+.player-card .ovr {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.player-card .rarity {
+    font-weight: bold;
+    letter-spacing: 2px;
 }
 
 #roll-button {
@@ -93,17 +109,18 @@ main {
     font-weight: bold;
     border-radius: 10px;
     cursor: pointer;
-    margin-top: 20px;
+    transition: 0.2s;
 }
 
 #roll-button:hover {
     background: #ffad55;
-    transform: scale(1.04);
+    transform: scale(1.05);
 }
 
 #roll-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
 #message {
@@ -121,16 +138,26 @@ main {
 
 .inventory {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 15px;
 }
 
 .player-item {
-    background: #202637;
+    min-height: 190px;
+    background: linear-gradient(145deg, #30394f, #171c29);
     padding: 15px;
     border-radius: 12px;
     text-align: center;
-    border: 2px solid #444;
+    border: 2px solid #555;
+    transition: 0.2s;
+}
+
+.player-item:hover {
+    transform: translateY(-5px);
+}
+
+.player-item .basketball {
+    font-size: 30px;
 }
 
 .player-item h3 {
@@ -138,18 +165,23 @@ main {
 }
 
 .player-item p {
-    color: #aaa;
+    color: #bbb;
     font-size: 13px;
+    margin: 5px;
 }
 
 .player-item button {
     background: #e66b48;
     border: none;
-    padding: 8px 12px;
+    padding: 8px 15px;
     border-radius: 6px;
     color: white;
     cursor: pointer;
     margin-top: 10px;
+}
+
+.player-item button:hover {
+    background: #ff7954;
 }
 
 .empty {
@@ -161,7 +193,21 @@ main {
 .epic { border-color: #a855f7; }
 .legendary { border-color: #f1c40f; }
 .mythic { border-color: #ff5555; }
-.goat { border-color: #ffffff; box-shadow: 0 0 12px gold; }
+.goat {
+    border-color: gold;
+    box-shadow: 0 0 15px #ffd70055;
+}
+
+@keyframes reveal {
+    from {
+        opacity: 0;
+        transform: scale(0.7) rotate(-5deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+}
 
 @media (max-width: 500px) {
     .stats {
